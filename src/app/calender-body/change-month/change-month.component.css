@@ -1,0 +1,17 @@
+.icon-container {
+    display: inline-block;
+    padding: 0 10px;
+    cursor: pointer; 
+}
+
+.month-heading {
+    margin: 0 5px;
+    display: inline-block;
+    width: 25px;
+}
+
+.year-heading {
+    margin: 0 5px;
+    display: inline-block;
+    width: 30px;
+}
