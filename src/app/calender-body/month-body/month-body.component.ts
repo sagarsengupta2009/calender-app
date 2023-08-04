@@ -151,22 +151,12 @@ export class MonthBodyComponent implements OnInit,OnDestroy {
     this.isDateValid = this.validateDate(form.value.date);
     this.isTitleValid = this.validateTitle(form.value.title);
     if (this.isDateValid && this.isTitleValid) {
-      // let eventObj = {
-      //   id: this.headerService.generateGUID(),
-      //   title: form.value.title,
-      //   date: form.value.date,
-      // };
-      // this.calenderBodyService.setEvents(eventObj);
-      // this.calenderBodyService.saveEventsToStorage(this.calenderBodyService.getEvents());
-      // this.headerService.addEventToDate.next(eventObj);
       for (const [i, day] of this.daysObj.entries()) {
         let dateArr = this.event.date.split('/');
         let date = Number(dateArr[0]);
         let month = Number(dateArr[1]);
         let year = Number(dateArr[2]);
         if (day.day === date) {
-          // day.events.splice(this.index, 1);
-          this.event;
           day.events.forEach((item) => {
             if (item.id === this.event.id) {
               item.title = form.value.title;
@@ -250,8 +240,6 @@ export class MonthBodyComponent implements OnInit,OnDestroy {
     for (const [i, day] of this.daysObj.entries()) {
       let dateArr = this.event.date.split('/');
       let date = Number(dateArr[0]);
-      let month = Number(dateArr[1]);
-      let year = Number(dateArr[2]);
       if (day.day === date) {
         day.events.splice(this.index, 1);
       }
@@ -262,21 +250,17 @@ export class MonthBodyComponent implements OnInit,OnDestroy {
 
   drop(event: CdkDragDrop<{ id: string; title: string; date: string }[]>) {
     let draggedEvent = event.previousContainer.data[event.currentIndex];
-    let length = event.container.id.split('-').length;
     let element: any = event.container.element;
     let dropDate = Number(element.nativeElement.children[0].outerText);
     this.daysObj[dropDate - 1].events.push(draggedEvent);
     for (const [i, day] of this.daysObj.entries()) {
       let dateArr = draggedEvent.date.split('/');
       let date = Number(dateArr[0]);
-      let month = Number(dateArr[1]);
-      let year = Number(dateArr[2]);
       if (day.day === date) {
         day.events.splice(event.currentIndex, 1);
       }
     }
     this.calenderBodyService.changeEventDate(draggedEvent, dropDate);
-    // moveItemInArray(this.allTem event.previousIndex, event.currentIndex);
   }
 
   ngOnDestroy(): void {
