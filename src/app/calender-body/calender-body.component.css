@@ -1,0 +1,26 @@
+.body-container {
+    background: #F3F3F3;
+    padding: 45px 70px;
+    min-height: 92.5vh;
+}
+
+.inner-space {
+    position: relative;
+    width: 100%;
+    min-height: 79vh;
+    background: #fff;
+    box-shadow: 0 35px 55px rgba(0, 0, 0, 0.1);
+
+}
+
+.change-month-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 6vh;
+}
+
+.month-body-container {
+    padding: 0 20px 20px 20px;
+    min-height: 74vh;
+}
