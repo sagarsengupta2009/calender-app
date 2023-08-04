@@ -254,7 +254,6 @@ export class MonthBodyComponent implements OnInit,OnDestroy {
       let year = Number(dateArr[2]);
       if (day.day === date) {
         day.events.splice(this.index, 1);
-        this.allEvents;
       }
     }
     this.calenderBodyService.deleteEvent(this.eventId);
