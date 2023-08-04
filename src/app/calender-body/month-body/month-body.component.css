@@ -1,0 +1,82 @@
+.days-container{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.day-body {
+    box-shadow: 0 35px 55px rgba(0, 0, 0, 0.1);
+    max-height: 15vh;
+    overflow: auto;
+}
+
+.each-day {
+    max-width: 10vh;
+    min-width: 20vh;
+    margin: 10px;
+    min-height: 15vh;
+}
+.event-container {
+    display: flex;
+    justify-content: space-between;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    transition: 0.3s;
+    min-width: 50%;
+    max-width: 100%;
+    margin-top: 4%;
+    border-radius: 5px;
+    font-size: 12px;
+    background: #EE3D89;
+    color: rgb(243, 242, 242);
+    text-align: justify;
+    padding: 0 5px;
+}
+.title-container {
+    word-break: break-word;
+}
+.context-menu {
+    position: absolute;
+}
+ul {
+    list-style: none;
+    font-size: smaller;
+    min-width: 115%;
+}
+.menu {
+    display: flex;
+    flex-direction: column;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 10px 20px rgb(64 64 64 / 5%);
+    padding: 10px 10px;
+    border: 1px solid gray;
+}
+.menu > li > a {
+    display: flex;
+    justify-content: flex-start;
+    padding: 2px 5px;
+    width: 100%;
+    cursor: pointer;
+    
+}
+.menu > li > a > i {
+    margin-right: 10%;
+}
+.form-button {
+    float: right;
+    margin-top: 5%;
+}
+.reset-button {
+    float: left;
+    margin-top: 5%;
+}
+
+.cdk-drag-preview {
+    box-sizing: border-box;
+    border-radius: 4px;
+    width:10%; 
+    height:11%;
+    box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
+           0 8px 10px 1px rgba(0, 0, 0, 0.14),
+           0 3px 14px 2px rgba(0, 0, 0, 0.12);
+  }
