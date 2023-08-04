@@ -31,11 +31,6 @@ export class ChangeMonthComponent implements OnInit {
     this.dateCount = this.changeMonthService.getDateCount(monthIdx, this.year);
     this.monthBodyService.dateCountChange.next({ dateCount: this.dateCount, monthIdx: monthIdx, yearNumber: this.year });
   }
-
-  // getDateCount(monthIdx: number, year: number): number {
-  //   let dateInCurrMonth = this.changeMonthService.getDayCountForMonth(monthIdx, year);
-  //   return dateInCurrMonth;
-  // }
   
   changeMonthForwardDir(months: string[]): void {
     for (const [i, month] of months.entries()) {
