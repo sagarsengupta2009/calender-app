@@ -1,4 +1,11 @@
-import { Component, Input, OnDestroy, OnInit, ViewChild, Renderer2 } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+  Renderer2,
+} from '@angular/core';
 import { MonthBodyService } from './month-body.service';
 import { CalenderBodyService } from '../calender-body.service';
 import { ChangeMonthService } from '../change-month/change-month.service';
@@ -12,10 +19,10 @@ import { Subscription } from 'rxjs';
   templateUrl: './month-body.component.html',
   styleUrls: ['./month-body.component.css'],
 })
-export class MonthBodyComponent implements OnInit,OnDestroy {
+export class MonthBodyComponent implements OnInit, OnDestroy {
   @ViewChild('form') editEventForm!: NgForm;
   @Input() allEvents!: { id: string; title: string; date: string }[] | null;
-  private subscriptions: Subscription = new Subscription();
+  subscriptions: Subscription = new Subscription();
   dateCount!: number;
   year!: number;
   month!: any;
@@ -33,6 +40,7 @@ export class MonthBodyComponent implements OnInit,OnDestroy {
   eventId: string = '';
   isDateValid: boolean = false;
   isTitleValid: boolean = false;
+  isDateChanged: boolean = false;
 
   constructor(
     private readonly monthBodyService: MonthBodyService,
@@ -113,13 +121,13 @@ export class MonthBodyComponent implements OnInit,OnDestroy {
         }
       })
     );
-      
-    this.renderer.listen('window', 'click',(e:Event)=>{ 
+
+    this.renderer.listen('window', 'click', (e: Event) => {
       this.closeContextMenu();
     });
 
     this.closeContextMenu();
-  };
+  }
 
   detectRightMouseClick(
     $event: MouseEvent,
@@ -137,55 +145,99 @@ export class MonthBodyComponent implements OnInit,OnDestroy {
         'top.px': $event.clientY - 90,
       };
     }
-  };
+  }
 
   closeContextMenu() {
     this.rightPanelStyle = {
       display: 'none',
     };
-  };
+  }
 
   openEventDialog(): void {
     const evenDialog = document.getElementById('editEventModal');
     if (evenDialog) {
       evenDialog.style.display = 'block';
     }
-  };
+  }
 
   onSubmit(form: NgForm): void {
     this.isDateValid = this.headerService.validateDate(form.value.date);
     this.isTitleValid = this.headerService.validateTitle(form.value.title);
+    let formDateArr = form.value.date.split('/');
+    let formMonth = Number(formDateArr[1]);
+    let formYear = Number(formDateArr[2]);
     if (this.isDateValid && this.isTitleValid) {
+      let editedEvent: { id: string; title: string; date: string } = {
+        id: '',
+        title: '',
+        date: '',
+      };
       for (const [i, day] of this.daysObj.entries()) {
         let dateArr = this.event.date.split('/');
         let date = Number(dateArr[0]);
         let month = Number(dateArr[1]);
         let year = Number(dateArr[2]);
-        if (day.day === date) {
-          day.events.forEach((item) => {
-            if (item.id === this.event.id) {
-              item.title = form.value.title;
+        if (formYear === year) {
+          if (formMonth === month) {
+            if (day.day === date) {
+              day.events.forEach((item, idx) => {
+                let dateArr1 = form.value.date.split('/');
+                let date1 = dateArr1[0];
+                if (item.id === this.event.id) {
+                  item.title = form.value.title;
+                  if (date !== Number(date1)) {
+                    this.isDateChanged = true;
+                    item.date = form.value.date;
+                    editedEvent = day.events.splice(idx, 1)[0];
+                  }
+                }
+              });
             }
-          });
+          } else {
+            if (day.day === date) {
+              day.events.forEach((item, idx) => {
+                if (item.id === this.event.id) {
+                  this.isDateChanged = true;
+                  item.title = form.value.title;
+                  item.date = form.value.date;
+                  editedEvent = day.events.splice(idx, 1)[0];
+                }
+              });
+            }
+          }
+        } else {
+          if (day.day === date) {
+            day.events.forEach((item, idx) => {
+              if (item.id === this.event.id) {
+                this.isDateChanged = true;
+                item.title = form.value.title;
+                item.date = form.value.date;
+                editedEvent = day.events.splice(idx, 1)[0];
+              }
+            });
+          }
         }
+      }
+      if (this.isDateChanged) {
+        this.headerService.addEventToDate.next(editedEvent);
       }
       this.calenderBodyService.editEvent(this.eventId, form.value.title);
       this.closeEventDialog();
     } else if (!this.isDateValid) {
       alert('Please enter date in dd/mm/yyyy format!');
     }
-  };
+  }
 
   closeEventDialog(): void {
     const evenDialog = document.getElementById('editEventModal');
     if (evenDialog) {
       evenDialog.style.display = 'none';
     }
-  };
+  }
 
   resetForm(): void {
     this.editEventForm.reset();
-  };
+  }
 
   editEvent() {
     this.editEventForm.setValue({
@@ -194,7 +246,7 @@ export class MonthBodyComponent implements OnInit,OnDestroy {
     });
     this.openEventDialog();
     this.closeContextMenu();
-  };
+  }
 
   deleteEvent() {
     for (const [i, day] of this.daysObj.entries()) {
@@ -206,7 +258,7 @@ export class MonthBodyComponent implements OnInit,OnDestroy {
     }
     this.calenderBodyService.deleteEvent(this.eventId);
     this.closeContextMenu();
-  };
+  }
 
   drop(event: CdkDragDrop<{ id: string; title: string; date: string }[]>) {
     let draggedEvent = event.previousContainer.data[event.currentIndex];
@@ -221,11 +273,11 @@ export class MonthBodyComponent implements OnInit,OnDestroy {
       }
     }
     this.calenderBodyService.changeEventDate(draggedEvent, dropDate);
-  };
+  }
 
   ngOnDestroy(): void {
     this.subscriptions.unsubscribe();
-  };
+  }
   // let dateArr = [
   //   {dateId: '', date: new Date(), events: [{id: '', title: '', date: ''}]}
   // ]
