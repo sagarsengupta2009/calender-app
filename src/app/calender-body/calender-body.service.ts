@@ -77,7 +77,6 @@ export class CalenderBodyService {
     dropDate: number
   ) {
     this.events?.forEach((item, i) => {
-      dropDate
       if (item.id === draggedEvent.id) {
         let dateArr = draggedEvent.date.split('/');
         dateArr[0] = dropDate.toString();
