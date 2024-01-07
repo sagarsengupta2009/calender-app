@@ -5,7 +5,7 @@ import { Subject } from 'rxjs';
   providedIn: 'root',
 })
 export class HeaderService {
-  addEventToDate = new Subject<{id: string, title: string; date: string }>();
+  addEventToDate = new Subject<{ id: string, title: string; date: string }>();
 
   constructor() {}
 

@@ -34,7 +34,12 @@ export class HeaderComponent implements OnInit {
         date: form.value.date,
       };
       this.calenderBodyService.setEvents(eventObj);
-      this.calenderBodyService.saveEventsToStorage(this.calenderBodyService.getEvents());
+      this.calenderBodyService.saveEventToStorage(eventObj)
+        .subscribe(response => {
+          console.log(response);
+          
+          alert('event saved')
+        });
       this.headerService.addEventToDate.next(eventObj);
       this.closeEventDialog();
     } else if(!this.isDateValid) {

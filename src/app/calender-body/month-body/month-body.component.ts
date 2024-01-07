@@ -5,6 +5,8 @@ import {
   OnInit,
   ViewChild,
   Renderer2,
+  OnChanges,
+  SimpleChanges,
 } from '@angular/core';
 import { MonthBodyService } from './month-body.service';
 import { CalenderBodyService } from '../calender-body.service';
@@ -13,13 +15,14 @@ import { HeaderService } from 'src/app/header/header.service';
 import { NgForm } from '@angular/forms';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Subscription } from 'rxjs';
+import { ApiEndPointService } from 'src/app/shared/service/api-end-point.service';
 
 @Component({
   selector: 'app-month-body',
   templateUrl: './month-body.component.html',
   styleUrls: ['./month-body.component.css'],
 })
-export class MonthBodyComponent implements OnInit, OnDestroy {
+export class MonthBodyComponent implements OnInit, OnChanges, OnDestroy {
   @ViewChild('form') editEventForm!: NgForm;
   @Input() allEvents!: { id: string; title: string; date: string }[] | null;
   subscriptions: Subscription = new Subscription();
@@ -47,20 +50,13 @@ export class MonthBodyComponent implements OnInit, OnDestroy {
     private readonly changeMonthService: ChangeMonthService,
     private readonly calenderBodyService: CalenderBodyService,
     private readonly headerService: HeaderService,
-    private renderer: Renderer2
+    private renderer: Renderer2,
+    private apiEndPoint: ApiEndPointService
   ) {}
 
-  ngOnInit(): void {
-    let months = this.calenderBodyService.getShortMonths();
+  ngOnChanges(changes: SimpleChanges): void {
     let currDate = new Date();
     let monthIdx = currDate.getUTCMonth() + 1;
-    this.month = months.find((month, idx) => {
-      return idx === monthIdx - 1;
-    });
-    this.year = currDate.getUTCFullYear();
-    let dateCount = this.changeMonthService.getDateCount(monthIdx, this.year);
-    this.daysObj = this.monthBodyService.getDays(dateCount);
-
     if (this.allEvents) {
       for (const [i, event] of this.allEvents.entries()) {
         let dateArr = event.date.split('/');
@@ -75,7 +71,35 @@ export class MonthBodyComponent implements OnInit, OnDestroy {
           }
         }
       }
-    }
+    } 
+  }
+
+  ngOnInit(): void {
+    let months = this.calenderBodyService.getShortMonths();
+    let currDate = new Date();
+    let monthIdx = currDate.getUTCMonth() + 1;
+    this.month = months.find((month, idx) => {
+      return idx === monthIdx - 1;
+    });
+    this.year = currDate.getUTCFullYear();
+    let dateCount = this.changeMonthService.getDateCount(monthIdx, this.year);
+    this.daysObj = this.monthBodyService.getDays(dateCount);
+
+    // if (this.allEvents) {
+    //   for (const [i, event] of this.allEvents.entries()) {
+    //     let dateArr = event.date.split('/');
+    //     let date = Number(dateArr[0]);
+    //     let month = Number(dateArr[1]);
+    //     let year = Number(dateArr[2]);
+    //     if (this.year === year) {
+    //       if (monthIdx === month) {
+    //         if (this.daysObj[date - 1]) {
+    //           this.daysObj[date - 1].events.push(event);
+    //         }
+    //       }
+    //     }
+    //   }
+    // }
 
     this.subscriptions.add(
       this.changeMonthService.setDateOnChange.subscribe((monthYearObj) => {
@@ -249,6 +273,7 @@ export class MonthBodyComponent implements OnInit, OnDestroy {
   }
 
   deleteEvent() {
+    let id = '';
     for (const [i, day] of this.daysObj.entries()) {
       let dateArr = this.event.date.split('/');
       let date = Number(dateArr[0]);
@@ -257,6 +282,11 @@ export class MonthBodyComponent implements OnInit, OnDestroy {
       }
     }
     this.calenderBodyService.deleteEvent(this.eventId);
+    this.apiEndPoint.deleteEvent(this.eventId).subscribe(
+      (response: any) => {
+        console.log(response);
+      }
+    );
     this.closeContextMenu();
   }
 

@@ -1,4 +1,7 @@
 import { Injectable } from '@angular/core';
+import { ApiEndPointService } from '../shared/service/api-end-point.service';
+import { Observable } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root',
@@ -20,9 +23,11 @@ export class CalenderBodyService {
   ];
   monthsShort: string[] = [];
   events: { id: string; title: string; date: string }[] = [];
-
-  constructor() {}
-
+  event: { id: string; title: string; date: string } = {id: '', title: '', date: ''};
+  constructor(
+    public apiEndPoint: ApiEndPointService
+  ) {}
+  
   getEvents(): { id: string; title: string; date: string }[] {
     return this.events;
   }
@@ -42,10 +47,12 @@ export class CalenderBodyService {
     return this.monthsShort;
   }
 
-  saveEventsToStorage(
-    events: { id: string; title: string; date: string }[] | null
-  ): void {
-    localStorage.setItem('allEvents', JSON.stringify(events));
+  saveEventToStorage(
+    event: { id: string; title: string; date: string } | null
+  ) {
+    // localStorage.setItem('allEvents', JSON.stringify(events));
+    return this.apiEndPoint.saveNewEvent(event);
+    // return this.http.post<{ title: string; date: string }>('http://localhost:3000/', events);
   }
 
   includeStorageEvents(events: { id: string; title: string; date: string }[]) {
@@ -60,7 +67,7 @@ export class CalenderBodyService {
         item.title = editedTitle;
       }
     });
-    this.saveEventsToStorage(this.events);
+    this.saveEventToStorage(this.event);
   }
 
   deleteEvent(deleteEventId: string) {
@@ -69,7 +76,7 @@ export class CalenderBodyService {
         this.events?.splice(i, 1);
       }
     });
-    this.saveEventsToStorage(this.events);
+    this.saveEventToStorage(this.event);
   }
 
   changeEventDate(
@@ -83,6 +90,6 @@ export class CalenderBodyService {
         item.date = dateArr.join('/');;
       }
     });
-    this.saveEventsToStorage(this.events);
+    this.saveEventToStorage(this.event);
   }
 }
