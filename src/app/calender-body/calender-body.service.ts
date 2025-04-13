@@ -23,11 +23,13 @@ export class CalenderBodyService {
   ];
   monthsShort: string[] = [];
   events: { id: string; title: string; date: string }[] = [];
-  event: { id: string; title: string; date: string } = {id: '', title: '', date: ''};
-  constructor(
-    public apiEndPoint: ApiEndPointService
-  ) {}
-  
+  event: { id: string; title: string; date: string } = {
+    id: '',
+    title: '',
+    date: '',
+  };
+  constructor(public apiEndPoint: ApiEndPointService) {}
+
   getEvents(): { id: string; title: string; date: string }[] {
     return this.events;
   }
@@ -61,13 +63,12 @@ export class CalenderBodyService {
     });
   }
 
-  editEvent(editedEventId: string, editedTitle: string) {
+  editEvent(editedEventId: string, editedEventBody: any) {
     this.events?.forEach((item, i) => {
       if (item.id === editedEventId) {
-        item.title = editedTitle;
+        item.title = editedEventBody.title;
       }
     });
-    this.saveEventToStorage(this.event);
   }
 
   deleteEvent(deleteEventId: string) {
@@ -76,7 +77,7 @@ export class CalenderBodyService {
         this.events?.splice(i, 1);
       }
     });
-    this.saveEventToStorage(this.event);
+    // this.saveEventToStorage(this.event);
   }
 
   changeEventDate(
@@ -87,7 +88,7 @@ export class CalenderBodyService {
       if (item.id === draggedEvent.id) {
         let dateArr = draggedEvent.date.split('/');
         dateArr[0] = dropDate.toString();
-        item.date = dateArr.join('/');;
+        item.date = dateArr.join('/');
       }
     });
     this.saveEventToStorage(this.event);

@@ -71,7 +71,7 @@ export class MonthBodyComponent implements OnInit, OnChanges, OnDestroy {
           }
         }
       }
-    } 
+    }
   }
 
   ngOnInit(): void {
@@ -245,7 +245,15 @@ export class MonthBodyComponent implements OnInit, OnChanges, OnDestroy {
       if (this.isDateChanged) {
         this.headerService.addEventToDate.next(editedEvent);
       }
-      this.calenderBodyService.editEvent(this.eventId, form.value.title);
+      this.calenderBodyService.editEvent(this.eventId, form.value);
+      const eventToEdit = {
+        id: this.eventId,
+        title: form.value.title,
+        date: form.value.date,
+      };
+      this.apiEndPoint.updateEvent(eventToEdit).subscribe((res) => {
+        res;
+      });
       this.closeEventDialog();
     } else if (!this.isDateValid) {
       alert('Please enter date in dd/mm/yyyy format!');
@@ -282,11 +290,9 @@ export class MonthBodyComponent implements OnInit, OnChanges, OnDestroy {
       }
     }
     this.calenderBodyService.deleteEvent(this.eventId);
-    this.apiEndPoint.deleteEvent(this.eventId).subscribe(
-      (response: any) => {
-        console.log(response);
-      }
-    );
+    this.apiEndPoint.deleteEvent(this.eventId).subscribe((response: any) => {
+      console.log(response);
+    });
     this.closeContextMenu();
   }
 

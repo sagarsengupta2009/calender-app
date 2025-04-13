@@ -27,41 +27,45 @@ export class HeaderComponent implements OnInit {
   onSubmit(form: NgForm): void {
     this.isDateValid = this.headerService.validateDate(form.value.date);
     this.isTitleValid = this.headerService.validateTitle(form.value.title);
-    if(this.isDateValid && this.isTitleValid) {
+    if (this.isDateValid && this.isTitleValid) {
       let eventObj = {
         id: this.headerService.generateGUID(),
         title: form.value.title,
         date: form.value.date,
       };
       this.calenderBodyService.setEvents(eventObj);
-      this.calenderBodyService.saveEventToStorage(eventObj)
-        .subscribe(response => {
+      this.calenderBodyService.saveEventToStorage(eventObj).subscribe(
+        (response) => {
           console.log(response);
-          
-          alert('event saved')
-        });
+
+          alert('event saved');
+        },
+        (error) => {
+          error;
+        }
+      );
       this.headerService.addEventToDate.next(eventObj);
       this.closeEventDialog();
-    } else if(!this.isDateValid) {
-      alert("Please enter date in dd/mm/yyyy format!")
+    } else if (!this.isDateValid) {
+      alert('Please enter date in dd/mm/yyyy format!');
     }
-  };
+  }
 
   openEventDialog(): void {
     const evenDialog = document.getElementById('eventModal');
     if (evenDialog) {
       evenDialog.style.display = 'block';
     }
-  };
+  }
 
   closeEventDialog(): void {
     const evenDialog = document.getElementById('eventModal');
     if (evenDialog) {
       evenDialog.style.display = 'none';
     }
-  };
+  }
 
   resetForm(): void {
     this.eventForm.reset();
-  };
+  }
 }
